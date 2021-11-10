@@ -1,8 +1,6 @@
 mod lib;
-use std::env::*;
 
-fn main() {
-    if args().count() == 1 { lib::draw_banner() };
+fn main() { 
 
     let matches = lib::parse_arguments();
     
