@@ -10,7 +10,7 @@ development is not focused on this.
 Contributors are welcomed).
 
 ## Build
-Make sure to have the latest version of Rust installed on your system
+Make sure you have the latest version of Rust installed on your system, then run:
 
 ```
 $ git clone https://github.com/andreademurtas/ctfsak.git && cd ctfsak
