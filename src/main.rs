@@ -18,6 +18,10 @@ fn main() {
         if let Some(c) = matches.value_of("encrypt") {
             
         }
+        
+        if let Some(c) = matches.value_of("decrypt") {
+
+        }
     
     }
     else {
@@ -32,6 +36,10 @@ fn main() {
         
         if let Some(c) = matches.value_of("encrypt") {
             utils::encrypt(c, matches.value_of("INPUT").unwrap());
+        }
+
+        if let Some(c) = matches.value_of("decrypt") {
+            utils::decrypt(c, matches.value_of("INPUT").unwrap());
         }
     }
 }

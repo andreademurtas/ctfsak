@@ -136,3 +136,15 @@ pub fn encrypt(algorithm: &str, text: &str) -> () {
     }
 
 }
+
+pub fn decrypt(algorithm: &str, path: &str) -> () {
+    
+    match algorithm.to_lowercase().as_str() {
+        "rsa" => {
+            rsa_local::decrypt_rsa(path).unwrap();
+        },
+        _ => {
+            eprintln!("Please specify a valid algorithm");
+        } 
+    }
+} 
