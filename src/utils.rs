@@ -3,6 +3,7 @@ use base64;
 use urlencoding; 
 use std::fs::File;
 use std::io::prelude::*;
+use crate::rsa_local;
 
 static BANNER: &str = "
           __     _____                           __    
@@ -121,4 +122,17 @@ pub fn decode_from_file(encoding: &str, filename: &str) -> std::io::Result<()> {
     }
 
     Ok(())
+}
+
+pub fn encrypt(algorithm: &str, text: &str) -> () { 
+   
+    match algorithm.to_lowercase().as_str() {
+        "rsa" => {
+           rsa_local::encrypt_rsa(text).unwrap(); 
+        },
+        _ => {
+            eprintln!("Please specify a valid algorithm");
+        }
+    }
+
 }

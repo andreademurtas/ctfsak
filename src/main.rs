@@ -1,28 +1,37 @@
-mod lib;
+mod utils;
+mod rsa_local;
 
 fn main() { 
 
-    let matches = lib::parse_arguments();
+    let matches = utils::parse_arguments();
     
     if matches.is_present("file"){
 
         if let Some(c) = matches.value_of("encode") {
-            lib::encode_from_file(c, matches.value_of("INPUT").unwrap()).unwrap();
+            utils::encode_from_file(c, matches.value_of("INPUT").unwrap()).unwrap();
         }
 
         if let Some(c) = matches.value_of("decode") {
-            lib::decode_from_file(c, matches.value_of("INPUT").unwrap()).unwrap();
+            utils::decode_from_file(c, matches.value_of("INPUT").unwrap()).unwrap();
+        }
+
+        if let Some(c) = matches.value_of("encrypt") {
+            
         }
     
     }
     else {
 
         if let Some(c) = matches.value_of("encode") {
-            lib::encode(c, matches.value_of("INPUT").unwrap());
+            utils::encode(c, matches.value_of("INPUT").unwrap());
         }
 
         if let Some(c) = matches.value_of("decode") {
-            lib::decode(c, matches.value_of("INPUT").unwrap());
+            utils::decode(c, matches.value_of("INPUT").unwrap());
+        }
+        
+        if let Some(c) = matches.value_of("encrypt") {
+            utils::encrypt(c, matches.value_of("INPUT").unwrap());
         }
     }
 }
