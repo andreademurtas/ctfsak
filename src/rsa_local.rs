@@ -1,11 +1,11 @@
-use rsa::{PublicKey, RsaPrivateKey, RsaPublicKey, PaddingScheme, pkcs8::FromPublicKey, pkcs8::FromPrivateKey};
-use rand::rngs::OsRng;
-use sha2;
+use openssl::rsa::{Rsa, Padding};
+use openssl::symm::Cipher;
 use std::io;
+use std::io::Write;
+use std::fs;
 
 pub fn encrypt_rsa(text: &str) -> io::Result<()> {
-    let mut rng = OsRng;
-    let mut no_of_bits = String::new();
+    let mut id_of_bits = String::new();
     println!("Of how many bits do you want the key to be?");
     println!("Enter the corresponding ID");
     println!("+----+----------------+
@@ -22,9 +22,9 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
 |    |                |
 | 5  | 4096           |
 +----+----------------+");
-    io::stdin().read_line(&mut no_of_bits)?;
-    let mut bits = 0;
-    match no_of_bits.as_str().trim() {
+    io::stdin().read_line(&mut id_of_bits)?;
+    let mut bits;
+    match id_of_bits.as_str().trim() {
         "1" => bits = 512,
         "2" => bits = 1024,
         "3" => bits = 2048,
@@ -35,10 +35,13 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
             std::process::exit(1);
         }
     };
-    let private_key = RsaPrivateKey::new(&mut rng, bits).expect("Failed to generate a key");
-    let public_key = RsaPublicKey::from(&private_key);
+    let rsa = Rsa::generate(bits).unwrap();
+    let private_key: Vec<u8> = rsa.private_key_to_pem().unwrap();
+    let public_key: Vec<u8> = rsa.public_key_to_pem().unwrap();
+    println!("Private key:\n{}", String::from_utf8(private_key).unwrap());
+    println!("Public key:\n{}", String::from_utf8(public_key).unwrap());
     let b_text = text.as_bytes();
-    let mut padding: PaddingScheme;
+    let mut padding: Padding;
     let mut id_padding = String::new();
     println!("What padding scheme?");
     println!("Enter the corresponding ID");
@@ -52,14 +55,18 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
 +----+----------------+");
     io::stdin().read_line(&mut id_padding)?;
     match id_padding.as_str().trim() {
-        "1" => padding = PaddingScheme::new_pkcs1v15_encrypt(),
-        "2" => padding = PaddingScheme::new_oaep::<sha2::Sha256>(),
+        "1" => padding = Padding::PKCS1,
+        "2" => padding = Padding::PKCS1_OAEP,
         _ => {
             eprintln!("Please provide a valid ID.");
             std::process::exit(1);
         }
     };
-    let enc_data = public_key.encrypt(&mut rng, padding, &b_text[..]).expect("Failed to encrypt");
-    println!("{:?}", String::from_utf8(enc_data));
+    let mut enc_data: Vec<u8> = vec![0; rsa.size() as usize];
+    let _ = rsa.public_encrypt(b_text, &mut enc_data, padding).unwrap();
+    println!("Where do you want to save the encrypted data?");
+    let mut path = String::new();
+    io::stdin().read_line(&mut path)?;
+    fs::write(path.trim(), enc_data)?;
     Ok(())
 }
