@@ -15,11 +15,11 @@ fn main() {
             utils::decode_from_file(c, matches.value_of("INPUT").unwrap()).unwrap();
         }
 
-        if let Some(c) = matches.value_of("encrypt") {
+        if let Some(_c) = matches.value_of("encrypt") {
             
         }
         
-        if let Some(c) = matches.value_of("decrypt") {
+        if let Some(_c) = matches.value_of("decrypt") {
 
         }
     

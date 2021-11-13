@@ -1,5 +1,4 @@
 use openssl::rsa::{Rsa, Padding};
-use openssl::symm::Cipher;
 use std::io;
 use std::fs;
 use std::fs::File;
@@ -26,7 +25,7 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
     io::stdout().flush().unwrap();
     io::stdin().read_line(&mut id_of_bits)?;
     println!("\n");
-    let mut bits;
+    let bits;
     match id_of_bits.as_str().trim() {
         "1" => bits = 512,
         "2" => bits = 1024,
@@ -44,7 +43,7 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
     println!("Private key:\n{}", String::from_utf8(private_key).unwrap());
     println!("Public key:\n{}", String::from_utf8(public_key).unwrap());
     let b_text = text.as_bytes();
-    let mut padding: Padding;
+    let padding: Padding;
     let mut id_padding = String::new();
     println!("What padding scheme?");
     println!("Enter the corresponding ID");
@@ -78,42 +77,10 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
 
 pub fn decrypt_rsa(path: &str) -> io::Result<()> {
     let mut f = File::open(path.trim()).expect("Couldn't open file");
-    let mut metadata = fs::metadata(path.trim()).expect("Unable to read metadata");
+    let metadata = fs::metadata(path.trim()).expect("Unable to read metadata");
     let mut text_read_vec = vec![0; metadata.len() as usize];
     f.read(&mut text_read_vec).expect("Buffer overflow");
-    let mut text_read = &text_read_vec[..];
-    let mut id_of_bits = String::new();
-    println!("Of how many bits is your key?");
-    println!("Enter the corresponding ID");
-    print!("+----+----------------+
-| ID | NUMBER OF BITS |
-+----+----------------+
-|    |                |
-| 1  | 512            |
-|    |                |
-| 2  | 1024           |
-|    |                |
-| 3  | 2048           |
-|    |                |
-| 4  | 3072           |
-|    |                |
-| 5  | 4096           |
-+----+----------------+\n>");
-    io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut id_of_bits)?;
-    println!("");
-    let mut bits;
-    match id_of_bits.as_str().trim() {
-        "1" => bits = 512,
-        "2" => bits = 1024,
-        "3" => bits = 2048,
-        "4" => bits = 3072,
-        "5" => bits = 4096,
-        _ => {
-            eprintln!("Please provide a valid ID.");
-            std::process::exit(1);
-        }
-    };
+    let text_read = &text_read_vec[..]; 
     println!("Is your key password-protected?");
     print!("+----+---------+
 | ID |  ANSWER |
@@ -156,7 +123,7 @@ pub fn decrypt_rsa(path: &str) -> io::Result<()> {
         }
     }
     let mut data: Vec<u8> = vec![0; rsa.size() as usize];
-    let mut padding: Padding;
+    let padding: Padding;
     let mut id_padding = String::new();
     println!("What padding scheme?");
     println!("Enter the corresponding ID");

@@ -1,4 +1,4 @@
-use clap::{Arg, App, SubCommand, ArgMatches, AppSettings};
+use clap::{Arg, App, ArgMatches, AppSettings};
 use base64;
 use urlencoding; 
 use std::fs::File;
@@ -19,7 +19,7 @@ pub fn parse_arguments() -> ArgMatches {
     let matches = App::new("🚩 CTF Swiss Army Knife")
         .max_term_width(0)
         .before_help(BANNER)
-        .version("1.0")
+        .version("0.1.0")
         .author("Andrea De Murtas <ypno25@protonmail.com>")
         .about("A tool to speed up common operations needed during CTFs")
         .arg(Arg::new("encode")
