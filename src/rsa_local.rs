@@ -40,12 +40,45 @@ pub fn encrypt_rsa(text: &str) -> io::Result<()> {
     let rsa = Rsa::generate(bits).unwrap();
     let private_key: Vec<u8> = rsa.private_key_to_pem().unwrap();
     let public_key: Vec<u8> = rsa.public_key_to_pem().unwrap();
-    println!("Private key:\n{}", String::from_utf8(private_key).unwrap());
-    println!("Public key:\n{}", String::from_utf8(public_key).unwrap());
+    println!("Do you want to save your keys to a file?");
+    let mut answer_id = String::new();
+    print!("+----+---------+
+| ID |  ANSWER |
++----+---------+
+|    |         |
+| 1  |  yes    |
+|    |         |
+| 2  |  no     |
++----+---------+\n");
+    print!(">");
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut answer_id)?;
+    match answer_id.as_str().trim() {
+        "1" => {
+            let mut name_private = String::new();
+            let mut name_public = String::new();
+            print!("Enter the name for the private key file: ");
+            io::stdout().flush().unwrap();
+            io::stdin().read_line(&mut name_private)?;
+            let mut name_private_r = name_private.trim().to_owned();
+            name_private_r += ".pem";
+            fs::write(name_private_r, String::from_utf8(private_key).unwrap()).expect("Something went wrong");
+            print!("Enter the name for the public key file: ");
+            io::stdout().flush().unwrap();
+            io::stdin().read_line(&mut name_public)?;
+            let mut name_public_r = name_public.trim().to_owned();
+            name_public_r += ".pem";
+            fs::write(name_public_r, String::from_utf8(public_key).unwrap()).expect("Something went wrong");
+        }
+        _ => {
+            eprintln!("Please provide a valid input");
+            std::process::exit(1);
+        } 
+    }
     let b_text = text.as_bytes();
     let padding: Padding;
     let mut id_padding = String::new();
-    println!("What padding scheme?");
+    println!("\n\nWhat padding scheme?");
     println!("Enter the corresponding ID");
     print!("+----+----------------+
 | ID | PADDING SCHEME |
