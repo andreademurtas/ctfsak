@@ -51,6 +51,16 @@ pub fn parse_arguments() -> ArgMatches {
             .long("file")
             .about("If set, INPUT must specify an input file rather than the input itself"))
         .setting(AppSettings::ArgRequiredElseHelp)
+        .arg(Arg::new("convert")
+            .short('c')
+            .long("convert")
+            .about("Convert INPUT to another representation"))
+        .arg(Arg::new("xor")
+            .short('x')
+            .long("xor")
+            .takes_value(true)
+            .value_name("SECOND_INPUT")
+            .about("Specifies we want to perform a bitwise XOR between INPUT and SECOND_INPUT(For now only supports xoring strings)"))
         .get_matches();
     matches
 }
@@ -148,3 +158,20 @@ pub fn decrypt(algorithm: &str, path: &str) -> () {
         } 
     }
 } 
+
+pub fn xor(input1: &str, input2: &str) -> (){
+    let mut int2 = input2.to_string().as_bytes().to_vec();
+    let mut int1 = input1.to_string().as_bytes().to_vec();
+    while int2.len() > int1.len() {
+        int1.push(0);
+    }
+    while int1.len() > int2.len() {
+        int2.push(0);
+    }
+    let v: Vec<u8> = int1
+        .iter()
+        .zip(int2.iter())
+        .map(|(&x1, &x2)| x1 ^ x2)
+        .collect();
+    println!("{:x?}", v);
+}
